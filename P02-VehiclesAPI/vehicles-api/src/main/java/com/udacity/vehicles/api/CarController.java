@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,11 +45,9 @@ class CarController {
      * @return list of vehicles
      */
     @GetMapping
-    Resources<Resource<Car>> list() {
-        List<Resource<Car>> resources = carService.list().stream().map(assembler::toResource)
-                .collect(Collectors.toList());
-        return new Resources<>(resources,
-                linkTo(methodOn(CarController.class).list()).withSelfRel());
+    ResponseEntity<List<Car>> list() {
+        List<Car> cars = carService.list();
+        return new ResponseEntity<List<Car>>(cars, HttpStatus.OK);
     }
 
     /**
@@ -57,13 +56,15 @@ class CarController {
      * @return all information for the requested vehicle
      */
     @GetMapping("/{id}")
-    Resource<Car> get(@PathVariable Long id) {
+    ResponseEntity<?> get(@PathVariable Long id) {
         /**
          * TODO: Use the `findById` method from the Car Service to get car information.
          * TODO: Use the `assembler` on that car and return the resulting output.
          *   Update the first line as part of the above implementing.
          */
-        return assembler.toResource(new Car());
+
+        Car car = carService.findById(id);
+        return ResponseEntity.ok(assembler.toResource(car));
     }
 
     /**
