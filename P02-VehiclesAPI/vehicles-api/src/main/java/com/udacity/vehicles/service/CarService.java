@@ -51,7 +51,7 @@ public class CarService {
      */
     public Car findById(Long id) {
         Car car = repository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car not found with Id: " + id));
+                .orElseThrow(() -> new CarNotFoundException());
 
         String price = priceClient.getPrice(id);
         car.setPrice(price);
@@ -76,8 +76,15 @@ public class CarService {
                         return repository.save(carToBeUpdated);
                     }).orElseThrow(CarNotFoundException::new);
         }
+        Car carCreated = repository.save(car);
 
-        return repository.save(car);
+        String price = priceClient.getPrice(carCreated.getId());
+        carCreated.setPrice(price);
+
+        Location location = mapsClient.getAddress(carCreated.getLocation());
+        carCreated.setLocation(location);
+
+        return carCreated;
     }
 
     /**
@@ -85,9 +92,9 @@ public class CarService {
      * @param id the ID number of the car to delete
      */
     public void delete(Long id) {
-        repository.findById(id)
-                .orElseThrow(() -> new CarNotFoundException("Car not found with Id: " + id));
+        Car car = repository.findById(id)
+                .orElseThrow(() -> new CarNotFoundException());
 
-        repository.deleteById(id);
+        repository.delete(car);
     }
 }
