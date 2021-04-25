@@ -2,6 +2,7 @@ package com.udacity.vehicles.client.prices;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -30,6 +31,7 @@ public class PriceClient {
      *   error message that the vehicle ID is invalid, or note that the
      *   service is down.
      */
+    @Cacheable("price")
     public String getPrice(Long vehicleId) {
         try {
             Price price = client
