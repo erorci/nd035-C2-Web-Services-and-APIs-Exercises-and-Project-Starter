@@ -111,8 +111,7 @@ public class CarControllerTest {
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.condition", is(Condition.USED.name())))
-                .andExpect(jsonPath("$.details.body", is("sedan")))
-                .andExpect(jsonPath("$.location.lat", is(40.73061)));
+                .andExpect(jsonPath("$.details.body", is("sedan")));
     }
 
     /**
